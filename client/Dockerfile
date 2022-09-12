@@ -1,22 +1,23 @@
 # pull official base image
-FROM node:17-alpine
+FROM nginx
 
 # set working directory
 WORKDIR /app
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+RUN curl -fsSL https://deb.nodesource.com/setup_17.x | bash -
+RUN apt-get install -y nodejs
 
 # install app dependencies
-COPY package.json ./
-COPY package-lock.json ./
-RUN npm install --silent
-RUN npm install react-scripts@3.4.1 -g --silent
+COPY package*.json ./
 
-# add app
-COPY . ./
+RUN npm install
+# RUN npm install react-scripts@3.4.1 -g --silent
 
-EXPOSE 3000
+COPY . .
 
 # start app
-CMD ["npm", "serve"]
+RUN npm run build
+
+RUN rm -r /usr/share/nginx/html/*
+
+RUN cp -a dist/. /usr/share/nginx/html
