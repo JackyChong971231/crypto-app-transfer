@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  client:
+    build: ./NFT_Market_Place_Client
+    container_name: NFT_Client
+    ports:
+      - '3000:3000'
+    stdin_open: true
+    tty: true
